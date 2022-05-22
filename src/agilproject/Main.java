@@ -4,11 +4,9 @@
  */
 package agilproject;
 
-import java.util.ArrayList;
 import java.util.Scanner;
 
 /**
- *
  * @author Kelvin
  */
 public class Main {
@@ -16,7 +14,10 @@ public class Main {
     /**
      * @param args the command line arguments
      */
-    public static void main(String[] args) {
+    public static void main(String[] args) throws Exception {
+        //CUANDO EL USUARIO QUIERA INICIAR SESION SE CARGARA LAS CUENTAS EXISTENTES
+
+
         ListaCelulares listaCelulares = new ListaCelulares();
         String opcionMenuCompra;
 
@@ -32,7 +33,7 @@ public class Main {
         Celular c4 = new Celular("Redmi note 7", "Xiaomi", "1234567811",
                 new Garantia("12/20/2030", "La garantia solo se aplica por "
                         + "defectos de fabrica"), 210);
-        Celular c5= new Celular("Redmi note 8", "Xiaomi", "1234567882",
+        Celular c5 = new Celular("Redmi note 8", "Xiaomi", "1234567882",
                 new Garantia("12/20/2030", "La garantia solo se aplica por "
                         + "defectos de fabrica"), 180);
         listaCelulares.aniadirCelular(c4);
@@ -41,10 +42,12 @@ public class Main {
         listaCelulares.aniadirCelular(c3);
         listaCelulares.aniadirCelular(c5);
         Empresa empresa = new Empresa("MERCADOCELL.SA", listaCelulares);
+        empresa.cargarCuentas("C:\\Users\\gianc\\Desktop\\cuentaClientes.txt");
+        //empresa.registrarCliente();
+        empresa.iniciarSesionCuentaCliente("1", "1");
+
 
         //CREACION DE NUEVOS CLIENTES EN LA EMPRESA (G.N)
-
-        empresa.crearNuevoCliente();
 
         //PRUEBA QUE FUNCIONA LA VERIFICACION DE UNA UNICA CUENTA (G.N)
 //        int prueba = 1;
@@ -56,7 +59,7 @@ public class Main {
         int cantidadCelulares;
         System.out.println(mostrarMenuDeCompra());
         System.out.print("\nIngrese la opcion: ");
-        Scanner sc= new Scanner(System.in);
+        Scanner sc = new Scanner(System.in);
         opcionMenuCompra = sc.next();
         do {
             switch (opcionMenuCompra) {
@@ -68,14 +71,14 @@ public class Main {
                     if (empresa.verificarExistenciaCelular(modeloDeCelular)) {
                         System.out.print("\nIngrese la cantidad de telefonos que desee comprar: ");
                         cantidadCelulares = sc.nextInt();
-                        if (empresa.verificarDisponibilidadCelular(cantidadCelulares, modeloDeCelular)){
+                        if (empresa.verificarDisponibilidadCelular(cantidadCelulares, modeloDeCelular)) {
                             empresa.cambiarEstadoNoDisponible(modeloDeCelular, cantidadCelulares);
                             empresa.generarFactura();
                             System.exit(0);
-                        }else{
+                        } else {
                             System.out.println("El modelo del celular anteriormente ingresado no esta disponible");
                         }
-                    }else{
+                    } else {
                         System.out.println("El modelo del celular anteriormente ingresado no existe");
                     }
 //                        if (empresa.verificarDisponibilidadCelular(imeiDeCelular)) {
@@ -97,21 +100,17 @@ public class Main {
                     System.out.println(mostrarMenuDeCompra());
                     opcionMenuCompra = sc.next();
             }
-        }while(opcionMenuCompra.equals("1"));
-        
-        
-        
-        
-        
+        } while (opcionMenuCompra.equals("1"));
+
+
     }
+
     //Menú que permite visualizar las opciones de compra hacia el comprador
-    public static String mostrarMenuDeCompra(){
+    public static String mostrarMenuDeCompra() {
         return "\n\nSeleccione una de las siguientes opciones: "
                 + "\n1. Comprar celular"
                 + "\n2. Salir";
     }
-    
-    
-    
-    
+
+
 }

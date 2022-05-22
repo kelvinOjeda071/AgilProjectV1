@@ -5,7 +5,6 @@
 package agilproject;
 
 /**
- *
  * @author Kelvin
  */
 public class Cuenta {
@@ -37,6 +36,6 @@ public class Cuenta {
     public String toString() {
         return "Cuenta{" + "usuario=" + usuario + ", contrasenia=" + contrasenia + '}';
     }
-    
-    
+
+
 }

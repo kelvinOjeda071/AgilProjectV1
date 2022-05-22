@@ -5,6 +5,7 @@
 package agilproject;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Scanner;
 
 /**
@@ -15,7 +16,8 @@ public class Empresa {
     private ListaCelulares listaCelularesEmpresa;
     //EMPRESA TIENE CLIENTES Y LOS CLIENTES TIENEN CUENTAS
     private ArrayList<Cliente> listaDeClientes;
-    ArrayList <Celular> listaCelularesComprados = new ArrayList<>();
+    ArrayList<Celular> listaCelularesComprados = new ArrayList<>();
+
 
     public Empresa(String nombre, ListaCelulares listaCelularesEmpresa) {
         this.nombre = nombre;
@@ -53,7 +55,7 @@ public class Empresa {
                 listaCelularesComprados.add(listaCelularesEmpresa.get(i));
             }
         }
-        for( Celular c1: listaCelularesComprados){
+        for (Celular c1 : listaCelularesComprados) {
             System.out.println(c1);
         }
     }
@@ -80,7 +82,7 @@ public class Empresa {
     }
     //LA EMPRESA CREARA UN NUEVO CLIENTE SIN UNA FACTURA PERO CON UNA CUENTA UNICA (G.N)
 
-    public Cliente crearNuevoCliente() {
+    public Cliente registrarCliente() {
         Scanner entradaDeDatos = new Scanner(System.in);
         System.out.print("Ingrese su nombre: ");
         String nombreCliente = entradaDeDatos.next();
@@ -88,23 +90,24 @@ public class Empresa {
         String nombreDeUsuario = entradaDeDatos.next();
         System.out.print("Cree una contrasena: ");
         String contrasena = entradaDeDatos.next();
+
         //Crear nuevo cliente
         Cuenta nuevaCuenta = new Cuenta(nombreDeUsuario, contrasena);
         Cliente nuevoCliente = new Cliente(nombreCliente, nuevaCuenta);
 
         //TODO: Verificar que no exista una cuenta con el mismo usuario
-        if (!verificarExistenciaDeCuenta(nuevaCuenta)) {
+        if (!verificarCuentaCliente(nuevaCuenta)) {
             this.listaDeClientes.add(nuevoCliente);
             System.out.println("USUARIO CREADO CON EXITO!!");
         } else {
             System.out.println("ESTE USUARIO YA EXISTE CREAR OTRO USUARIO!!!");
-            crearNuevoCliente();
+            registrarCliente();
         }
         //System.out.println(listaDeClientes);
         return nuevoCliente;
     }
 
-    private boolean verificarExistenciaDeCuenta(Cuenta nuevaCuenta) {
+    private boolean verificarCuentaCliente(Cuenta nuevaCuenta) {
         boolean usuarioEncontrado = false;
         for (int i = 0; i < this.listaDeClientes.size(); i++) {
             if (this.listaDeClientes.get(i).getCuenta().getUsuario().equals(nuevaCuenta.getUsuario())) {
@@ -116,4 +119,38 @@ public class Empresa {
     }
 
 
+    public void iniciarSesionCuentaCliente(String usuario, String contrasena) {
+        //SE DEBERIA ENVIAR EL ARCHIVO CON LAS CUENTAS PARA VERIFICAR SUS CREDENCIALES
+
+        /*
+         * Pueden existir 3 tipos de excepciones:
+         * 1.- Cuando el usuario es el mismo
+         * 2.- Cuando la contrasena es incorrecta
+         * 3.- Cuando no tiene una cuenta registrada
+         */
+        Cuenta cuentaCliente = new Cuenta(usuario, contrasena);
+
+        //Caso cuando tiene el mismo uuario
+        if (verificarCuentaCliente(cuentaCliente)) {
+            System.out.println("ESTE USUARIO YA EXISTE, COLOCAR OTRO USUARIO!!");
+            registrarCliente();
+        }
+    }
+
+    public void cargarCuentas(String direccionDelArchivo) {
+        //"direccion: C:\\Users\\gianc\\Desktop\\cuentaClientes.txt"
+        LecturaArchivo archivo = new LecturaArchivo();
+        ArrayList cuentas = archivo.obtenerCuentas(direccionDelArchivo);
+        // Obtiene cada hashmap y de cada uno obtiene sus 3 claves
+        for (int i = 0; i < cuentas.size(); i++) {
+            HashMap mp = (HashMap) cuentas.get(i);
+            String nombre = (String) mp.get("nombre");
+            String usuario = (String) mp.get("usuario");
+            String contrasena = (String) mp.get("contrasena");
+            //Se coloca en el arraylist de clientes de la empresa ya existentes
+            Cuenta cuentaCliente = new Cuenta(usuario, contrasena);
+            Cliente cliente = new Cliente(nombre, cuentaCliente);
+            this.listaDeClientes.add(cliente);
+        }
+    }
 }
